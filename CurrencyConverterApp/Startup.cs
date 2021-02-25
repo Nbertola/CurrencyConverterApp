@@ -47,6 +47,8 @@ namespace CurrencyConverterApp
                 app.UseDeveloperExceptionPage();
             }
 
+            UpdateDatabase(app);
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -62,6 +64,16 @@ namespace CurrencyConverterApp
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Currency Generator Api");
             });
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+
+            using var context = serviceScope.ServiceProvider.GetService<DataContext>();
+            context.Database.Migrate();
         }
     }
 }
