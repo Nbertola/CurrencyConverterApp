@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CurrencyConverterApp.Data;
-using Microsoft.AspNetCore.Http;
+﻿using CurrencyConverterApp.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 
 namespace CurrencyConverterApp.Controllers
 {
@@ -45,7 +41,6 @@ namespace CurrencyConverterApp.Controllers
         {
             var resultado = new CurrencyServices(_dataContext);
             return resultado.GetAllCurrency();
-            //.ToArray();
         }
 
 
@@ -54,7 +49,6 @@ namespace CurrencyConverterApp.Controllers
         {
             var resultado = new CurrencyQuoteServices(_dataContext);
             return resultado.GetAllCurrencyQuote();
-            //.ToArray();
         }
 
 
@@ -63,23 +57,15 @@ namespace CurrencyConverterApp.Controllers
         {
             var resultado = new CurrencyQuoteServices(_dataContext);
             return resultado.GetCurrencyQuoteByDate(Currencyid, data);
-            //.ToArray();
         }
 
         [HttpGet("GetCurrencyQuoteValue")]
-        public decimal GetCurrencyQuoteValue([FromQuery]int Currencyid, decimal CurrencyValue, DateTime data, int CurrencyidResult )
+        public decimal GetCurrencyQuoteValue([FromQuery] int Currencyid, decimal CurrencyValue, DateTime data, int CurrencyidResult)
         {
             var resultado = new CurrencyQuoteServices(_dataContext);
             return resultado.GetCurrencyQuoteValue(Currencyid, data, CurrencyidResult, CurrencyValue);
-            //.ToArray();
         }
 
     }
-
-
-
-
-
-
 }
 
