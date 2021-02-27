@@ -7,7 +7,7 @@ namespace CurrencyConverterApp.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
 
-        public DbSet<Currency> Currency { get; set; }
-        public DbSet<CurrencyQuote> CurrencyQuote { get; set; }
+        public DbSet<Currency> Currency { get; set; } ///El nombre de la propiedad suele ponerse en plural, siguiendo la convención de nombramiento de tablas de sql 'Currencies'
+        public DbSet<CurrencyQuote> CurrencyQuote { get; set; } /// idem
     }
 }

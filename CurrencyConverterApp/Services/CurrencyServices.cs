@@ -25,6 +25,7 @@ namespace CurrencyConverterApp
 
         public string LoadCurrency()
         {
+            ///TODO: Si lo ejecuto 2 veces lo mete devuelta y repite la información
             var dato1 = new Currency(1, "Pesos");
             var dato2 = new Currency(2, "Dolares");
             var dato3 = new Currency(3, "Euro");
