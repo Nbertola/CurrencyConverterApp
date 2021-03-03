@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CurrencyConverterApp.Data;
+using CurrencyConverterApp.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -28,6 +29,27 @@ namespace CurrencyConverterApp.Controllers
             var result = load.LoadCurrency();
             return result;
         }
+
+
+        [HttpPut("PutCurrencies")]
+        public void PutCurrencies([FromBody] CurrencyRequestDTO request)
+        {
+            
+            var load = new CurrencyServices(_dataContext);
+
+            
+
+            load.CreateCurrency(request);
+
+            //var result = load.LoadCurrency();
+            //return result;
+            //var response = Create(request);
+     //       return response;
+        
+       // new Currency(request);
+
+        }
+
 
 
         [HttpPut("LoadCurrencieQuotes")]
