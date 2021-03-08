@@ -45,7 +45,7 @@ namespace CurrencyConverterApp
 
             }
 
-        public List<CurrencyQuote> GetAllCurrencyQuote()
+        public List<CurrencyQuote> GetAllCurrencyQuotes()
             {
 
             var Lista = _dataContext.CurrencyQuote.ToList();

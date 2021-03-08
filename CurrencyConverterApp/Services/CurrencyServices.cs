@@ -55,14 +55,14 @@ namespace CurrencyConverterApp
             return "Load Succesfull!!!";
         }
 
-        public void CreateCurrency(CurrencyRequestDTO request)
+        public string CreateCurrency(CurrencyRequestDTO request)
         {
 
             var dato1 = new Currency(request.CurrencyNumber, request.Description) { };
             _dataContext.Currency.Add(dato1);
             _dataContext.SaveChanges();
 
-        ////    return "Load Succesfull!!!";
+           return "Load Succesfull!!!";
         }
 
 

@@ -22,78 +22,69 @@ namespace CurrencyConverterApp.Controllers
         private readonly DataContext _dataContext;
 
 
-        [HttpPut("LoadCurrencies")]
-        public string LoadCurrencies()
+        [HttpPost("CreateCurrenciesFromList")]
+        public string CreateCurrencies()
         {
-            var load = new CurrencyServices(_dataContext);
-            var result = load.LoadCurrency();
+            var createcurrencies = new CurrencyServices(_dataContext);
+            var result = createcurrencies.LoadCurrency();
             return result;
         }
 
 
-        [HttpPut("PutCurrencies")]
-        public void PutCurrencies([FromBody] CurrencyRequestDTO request)
+        [HttpPost("CreateCurrency")]
+        public string CreateCurrency([FromBody] CurrencyRequestDTO request)
         {
             
-            var load = new CurrencyServices(_dataContext);
-
+            var createcurrency = new CurrencyServices(_dataContext);
+            return createcurrency.CreateCurrency(request);
             
 
-            load.CreateCurrency(request);
 
-            //var result = load.LoadCurrency();
-            //return result;
-            //var response = Create(request);
-     //       return response;
-        
-       // new Currency(request);
 
         }
 
 
 
-        [HttpPut("LoadCurrencieQuotes")]
-        public string LoadCurrencieQuotes()
+        [HttpPost("CreateCurrencieQuotesFromList")]
+        public string CreateCurrencieQuotes()
         {
 
-            var load = new CurrencyQuoteServices(_dataContext);
-            var result = load.LoadCurrencieQuotes();
-            return result;
+            var createcurrenciequotes = new CurrencyQuoteServices(_dataContext);
+            return createcurrenciequotes.LoadCurrencieQuotes();
         }
 
 
         [HttpGet("GetAllCurrencies")]
         public List<Currency> GetAllCurrencies()
         {
-            var resultado = new CurrencyServices(_dataContext);
-            return resultado.GetAllCurrency();
-            //.ToArray();
-        }
+            var load = new CurrencyServices(_dataContext);
+            return load.GetAllCurrency();
+              }
 
 
-        [HttpGet("GetAllCurrencyQuote")]
-        public List<CurrencyQuote> GetAllCurrencyQuote()
+        [HttpGet("GetAllCurrencyQuotes")]
+        public List<CurrencyQuote> GetAllCurrencyQuotes()
         {
-            var resultado = new CurrencyQuoteServices(_dataContext);
-            return resultado.GetAllCurrencyQuote();
-            //.ToArray();
+            var load = new CurrencyQuoteServices(_dataContext);
+            return load.GetAllCurrencyQuotes();
+            
         }
 
 
         [HttpGet("GetCurrencyQuotebyDate")]
         public List<CurrencyQuote> GetCurrencyQuoteByDate(int Currencyid, DateTime data)
         {
-            var resultado = new CurrencyQuoteServices(_dataContext);
-            return resultado.GetCurrencyQuoteByDate(Currencyid, data);
+            var load = new CurrencyQuoteServices(_dataContext);
+            return load.GetCurrencyQuoteByDate(Currencyid, data);
             //.ToArray();
         }
 
         [HttpGet("GetCurrencyQuoteValue")]
-        public decimal GetCurrencyQuoteValue([FromQuery]int Currencyid, decimal CurrencyValue, DateTime data, int CurrencyidResult )
+        public decimal GetCurrencyQuoteValue([FromQuery]int CurrencyId, decimal CurrencyValue, DateTime Data, int CurrencyIdResult )
         {
             var resultado = new CurrencyQuoteServices(_dataContext);
-            return resultado.GetCurrencyQuoteValue(Currencyid, data, CurrencyidResult, CurrencyValue);
-            //.ToArray();
+            return resultado.GetCurrencyQuoteValue(CurrencyId, Data, CurrencyIdResult, CurrencyValue);
+            
         }
 
     }
