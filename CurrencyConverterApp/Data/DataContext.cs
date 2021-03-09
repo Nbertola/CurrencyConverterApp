@@ -12,9 +12,9 @@ namespace CurrencyConverterApp.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-        public DbSet<Currency> Currency { get; set; }
+        public DbSet<Currencies> Currencies { get; set; }
 
-        public DbSet<CurrencyQuote> CurrencyQuote { get; set; }
+        public DbSet<CurrencyQuotes> CurrencyQuotes { get; set; }
     }
 
 }

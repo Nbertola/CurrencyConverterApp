@@ -23,7 +23,7 @@ namespace CurrencyConverterApp.Controllers
 
 
         [HttpPost("CreateCurrenciesFromList")]
-        public string CreateCurrencies()
+        public List<string> CreateCurrencies()
         {
             var createcurrencies = new CurrencyServices(_dataContext);
             var result = createcurrencies.LoadCurrency();
@@ -55,7 +55,7 @@ namespace CurrencyConverterApp.Controllers
 
 
         [HttpGet("GetAllCurrencies")]
-        public List<Currency> GetAllCurrencies()
+        public List<Currencies> GetAllCurrencies()
         {
             var load = new CurrencyServices(_dataContext);
             return load.GetAllCurrency();
@@ -63,7 +63,7 @@ namespace CurrencyConverterApp.Controllers
 
 
         [HttpGet("GetAllCurrencyQuotes")]
-        public List<CurrencyQuote> GetAllCurrencyQuotes()
+        public List<CurrencyQuoteResultDTO> GetAllCurrencyQuotes()
         {
             var load = new CurrencyQuoteServices(_dataContext);
             return load.GetAllCurrencyQuotes();
@@ -72,18 +72,18 @@ namespace CurrencyConverterApp.Controllers
 
 
         [HttpGet("GetCurrencyQuotebyDate")]
-        public List<CurrencyQuote> GetCurrencyQuoteByDate(int Currencyid, DateTime data)
+        public List<CurrencyQuotes> GetCurrencyQuoteByDate(int Currencyid, DateTime data)
         {
             var load = new CurrencyQuoteServices(_dataContext);
             return load.GetCurrencyQuoteByDate(Currencyid, data);
-            //.ToArray();
+            
         }
 
         [HttpGet("GetCurrencyQuoteValue")]
-        public decimal GetCurrencyQuoteValue([FromQuery]int CurrencyId, decimal CurrencyValue, DateTime Data, int CurrencyIdResult )
+        public decimal GetCurrencyQuoteValue([FromQuery]string CurrencyIsoRequest, decimal CurrencyValue, DateTime Data, string CurrencyIsoResult )
         {
             var resultado = new CurrencyQuoteServices(_dataContext);
-            return resultado.GetCurrencyQuoteValue(CurrencyId, Data, CurrencyIdResult, CurrencyValue);
+            return resultado.GetCurrencyQuoteValue(CurrencyIsoRequest, Data, CurrencyIsoResult, CurrencyValue);
             
         }
 

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 namespace CurrencyConverterApp
@@ -30,8 +31,16 @@ namespace CurrencyConverterApp
         {
             services.AddControllers();
 
+            //services.AddDbContext<DataContext>(options => options
+            //    .UseSqlServer(Configuration.GetConnectionString("Sql")));
+
             services.AddDbContext<DataContext>(options => options
-                .UseSqlServer(Configuration.GetConnectionString("Sql")));
+            .UseSqlite(Configuration.GetConnectionString("Sqllite")));
+            
+
+            
+
+
 
             services.AddSwaggerGen(c =>
             {
