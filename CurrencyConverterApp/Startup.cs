@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using CurrencyConverterApp.Data;
@@ -12,7 +13,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
+using SQLitePCL;
 
 namespace CurrencyConverterApp
 {
@@ -30,8 +35,14 @@ namespace CurrencyConverterApp
         {
             services.AddControllers();
 
+            //services.AddDbContext<DataContext>(options => options
+            //    .UseSqlServer(Configuration.GetConnectionString("Sql")));
+
             services.AddDbContext<DataContext>(options => options
-                .UseSqlServer(Configuration.GetConnectionString("Sql")));
+            .UseSqlite(Configuration.GetConnectionString("Sqllite")));
+
+
+
 
             services.AddSwaggerGen(c =>
             {
@@ -47,7 +58,7 @@ namespace CurrencyConverterApp
                 app.UseDeveloperExceptionPage();
             }
 
-            UpdateDatabase(app);
+            //UpdateDatabase(app);
 
             app.UseHttpsRedirection();
 
@@ -75,5 +86,7 @@ namespace CurrencyConverterApp
             using var context = serviceScope.ServiceProvider.GetService<DataContext>();
             context.Database.Migrate();
         }
+
+
     }
 }

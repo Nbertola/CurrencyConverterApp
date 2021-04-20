@@ -1,5 +1,6 @@
 ﻿using CurrencyConverterApp.Data;
 using CurrencyConverterApp.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,57 +13,83 @@ namespace CurrencyConverterApp
 
         private readonly DataContext _dataContext;
 
+        private readonly ILogger<CurrencyServices> _logger;
+
         public CurrencyServices(DataContext dataContext)
         {
             _dataContext = dataContext;
+            //_logger = logger;
         }
 
 
-        public List<Currency> GetAllCurrency()
+        public List<Currencies> GetAllCurrency()
                     {
 
-            //List<Currency> Lista =   new List<Currency>();
-            //Lista.Add(new Currency("Pesos", 1));
-            //Lista.Add(new Currency("Dolares", 2));
-            //Lista.Add(new Currency("Euro", 3));
-
-            //_dataContext.Add(Lista);
-            var Lista =_dataContext.Currency.ToList();
-
-            return Lista;
-                    }
-
-        public string LoadCurrency()
-        {
-
-
-            //List<string> Lista = new List<string>();
-            //Lista.Add("Pesos");
-            //Lista.Add("Dolares");
-            //Lista.Add("Euro");
-            //_dataContext.Add(Lista);
-
-            var dato1 = new Currency(1,"Pesos");
-            var dato2 = new Currency(2,"Dolares");
-            var dato3 = new Currency(3,"Euro");
-            _dataContext.Currency.Add(dato1);
-            _dataContext.Currency.Add(dato2);
-            _dataContext.Currency.Add(dato3);
-
-                       
-            _dataContext.SaveChanges();
-
-            return "Load Succesfull!!!";
+        
+            return _dataContext.Currencies.ToList();
         }
 
-        public void CreateCurrency(CurrencyRequestDTO request)
+
+
+        public List<string> LoadCurrency()
         {
 
-            var dato1 = new Currency(request.CurrencyNumber, request.Description) { };
-            _dataContext.Currency.Add(dato1);
-            _dataContext.SaveChanges();
 
-        ////    return "Load Succesfull!!!";
+            List<Currencies> lista =  new List<Currencies> ();
+
+
+            var dato1 = new Currencies("ARS", "Pesos");
+            var dato2 = new Currencies("USD", "Dolares");
+            var dato3 = new Currencies("EUR", "Euro");
+
+            lista.Add(dato1);
+            lista.Add(dato2);
+            lista.Add(dato3);
+            
+            var datadb = _dataContext.Currencies.ToList();
+
+            List<String> listresult = new List<string>();
+
+            foreach (var currenciesinsert in lista)
+            {
+
+                var exist = datadb.Where(x => x.CurrencyISO4217.Contains(currenciesinsert.CurrencyISO4217)).Count();
+                
+
+                if (exist==0)
+                {
+                    _dataContext.Currencies.Add(currenciesinsert);
+                    _dataContext.SaveChanges();
+                     listresult.Add($"{currenciesinsert.Description} inserted Succesfull!!!");
+                }
+                else
+                {
+                    listresult.Add($"{currenciesinsert.Description}  already exist!!!"); 
+                }
+
+            }
+
+            return listresult.ToList();
+
+        }
+
+        public string CreateCurrency(CurrencyRequestDTO request)
+        {
+
+            var datadb = _dataContext.Currencies.ToList();
+            var exist = datadb.Where(x => x.CurrencyISO4217.Contains(request.CurrencyISO4217)).Count();
+
+            if (exist==0)
+            {
+                _dataContext.Currencies.Add(new Currencies(request.CurrencyISO4217, request.Description) { });
+                _dataContext.SaveChanges();
+
+                return $"{request.Description} insrted Succesfull!!!";
+            }
+            else
+            {
+                return $"{request.Description} already exist!!!";
+            }
         }
 
 

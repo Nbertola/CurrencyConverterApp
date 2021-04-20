@@ -10,7 +10,7 @@ namespace CurrencyConverterApp.Services
         
         public string Description { get; set; }
 
-        public int CurrencyNumber { get; set; }
+        public string CurrencyISO4217 { get; set; }
 
 
     }

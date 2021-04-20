@@ -6,94 +6,127 @@ using CurrencyConverterApp.Data;
 using CurrencyConverterApp.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Serilog;
+using Serilog.Core;
+//using Microsoft.Extensions.Logging;
 
 namespace CurrencyConverterApp.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CurrencyController
+    public class CurrencyController : Controller
     {
-        public CurrencyController(DataContext dataContext)
+        public CurrencyController(DataContext dataContext, IConfiguration configuration/*,ILogger logger*/)
         {
             _dataContext = dataContext;
+            Configuration = configuration;
+            //_logger = logger;
+
+            _logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .WriteTo
+            .SQLite(
+            //connectionString: Configuration.GetConnectionString("Sqllite"),
+            sqliteDbPath: "basesqllite.db"
+             //tableName: "Log"
+
+             )
+            .CreateLogger();
+
         }
+
+
+        public IConfiguration Configuration { get; }
+
+
+
+        private readonly ILogger  _logger;
 
         private readonly DataContext _dataContext;
 
 
-        [HttpPut("LoadCurrencies")]
-        public string LoadCurrencies()
-        {
-            var load = new CurrencyServices(_dataContext);
-            var result = load.LoadCurrency();
-            return result;
-        }
-
-
-        [HttpPut("PutCurrencies")]
-        public void PutCurrencies([FromBody] CurrencyRequestDTO request)
-        {
-            
-            var load = new CurrencyServices(_dataContext);
-
-            
-
-            load.CreateCurrency(request);
-
-            //var result = load.LoadCurrency();
-            //return result;
-            //var response = Create(request);
-     //       return response;
         
-       // new Currency(request);
+
+        [HttpPost("CreateCurrenciesFromList")]
+        public List<string> CreateCurrencies()
+        {
+
+            
+
+            var createcurrencies = new CurrencyServices(_dataContext) ;
+            var result = createcurrencies.LoadCurrency();
+            return result;
+        }
+
+
+        [HttpPost("CreateCurrency")]
+        public string CreateCurrency([FromBody] CurrencyRequestDTO request)
+        {
+            
+            var createcurrency = new CurrencyServices(_dataContext);
+            return createcurrency.CreateCurrency(request);
+            
+
+
 
         }
 
 
-
-        [HttpPut("LoadCurrencieQuotes")]
-        public string LoadCurrencieQuotes()
+        [HttpPost("CreateCurrencieQuotesFromList")]
+        public string CreateCurrencieQuotes()
         {
 
-            var load = new CurrencyQuoteServices(_dataContext);
-            var result = load.LoadCurrencieQuotes();
-            return result;
+            var createcurrenciequotes = new CurrencyQuoteServices(_dataContext);
+            return createcurrenciequotes.LoadCurrencieQuotes();
         }
 
 
         [HttpGet("GetAllCurrencies")]
-        public List<Currency> GetAllCurrencies()
+        public List<Currencies> GetAllCurrencies()
         {
-            var resultado = new CurrencyServices(_dataContext);
-            return resultado.GetAllCurrency();
-            //.ToArray();
+            var load = new CurrencyServices(_dataContext);
+
+            
+            var ipremote = HttpContext.Connection.RemoteIpAddress;
+            var resultMessage = $"Consulto Currencies { ipremote}";
+            _logger.Information(resultMessage);
+            return load.GetAllCurrency();
+            
+
         }
 
 
-        [HttpGet("GetAllCurrencyQuote")]
-        public List<CurrencyQuote> GetAllCurrencyQuote()
+        [HttpGet("GetAllCurrencyQuotes")]
+        public List<CurrencyQuoteResultDTO> GetAllCurrencyQuotes()
         {
-            var resultado = new CurrencyQuoteServices(_dataContext);
-            return resultado.GetAllCurrencyQuote();
-            //.ToArray();
+
+            //var factory = new LoggerFactory();
+            //var logger = new Logger<CurrencyController>(factory);
+            var resultMessage = "Hola";
+            var load = new CurrencyQuoteServices(_dataContext);
+
+            
+            return load.GetAllCurrencyQuotes();
+            
+            
         }
 
 
         [HttpGet("GetCurrencyQuotebyDate")]
-        public List<CurrencyQuote> GetCurrencyQuoteByDate(int Currencyid, DateTime data)
+        public List<CurrencyQuotes> GetCurrencyQuoteByDate(int Currencyid, DateTime data)
         {
-            var resultado = new CurrencyQuoteServices(_dataContext);
-            return resultado.GetCurrencyQuoteByDate(Currencyid, data);
-            //.ToArray();
+            var load = new CurrencyQuoteServices(_dataContext);
+            return load.GetCurrencyQuoteByDate(Currencyid, data);
+            
         }
 
         [HttpGet("GetCurrencyQuoteValue")]
-        public decimal GetCurrencyQuoteValue([FromQuery]int Currencyid, decimal CurrencyValue, DateTime data, int CurrencyidResult )
+        public decimal GetCurrencyQuoteValue([FromQuery]string CurrencyIsoRequest, decimal CurrencyValue, DateTime Data, string CurrencyIsoResult )
         {
             var resultado = new CurrencyQuoteServices(_dataContext);
-            return resultado.GetCurrencyQuoteValue(Currencyid, data, CurrencyidResult, CurrencyValue);
-            //.ToArray();
+            return resultado.GetCurrencyQuoteValue(CurrencyIsoRequest, Data, CurrencyIsoResult, CurrencyValue);
+            
         }
 
     }

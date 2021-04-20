@@ -1,4 +1,6 @@
 ﻿using CurrencyConverterApp.Data;
+using CurrencyConverterApp.Services;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,18 +28,18 @@ namespace CurrencyConverterApp
             public string LoadCurrencieQuotes() 
             {
 
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(1, new DateTime(2020, 01, 01), 1));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(1, new DateTime(2020, 01, 02), 1));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(1, new DateTime(2020, 01, 03), 1));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(1, new DateTime(2020, 01, 04), 1));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(150, new DateTime(2020, 01, 01), 2));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(160, new DateTime(2020, 01, 02), 2));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(170, new DateTime(2020, 01, 03), 2));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(180, new DateTime(2020, 01, 04), 2));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(200, new DateTime(2020, 01, 01), 3));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(210, new DateTime(2020, 01, 02), 3));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(220, new DateTime(2020, 01, 03), 3));
-                _dataContext.CurrencyQuote.Add(new CurrencyQuote(230, new DateTime(2020, 01, 04), 3));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(1, new DateTime(2020, 01, 01), 1));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(1, new DateTime(2020, 01, 02), 1));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(1, new DateTime(2020, 01, 03), 1));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(1, new DateTime(2020, 01, 04), 1));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(150, new DateTime(2020, 01, 01), 2));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(160, new DateTime(2020, 01, 02), 2));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(170, new DateTime(2020, 01, 03), 2));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(180, new DateTime(2020, 01, 04), 2));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(200, new DateTime(2020, 01, 01), 3));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(210, new DateTime(2020, 01, 02), 3));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(220, new DateTime(2020, 01, 03), 3));
+                _dataContext.CurrencyQuotes.Add(new CurrencyQuotes(230, new DateTime(2020, 01, 04), 3));
 
             _dataContext.SaveChanges();
             
@@ -45,17 +47,29 @@ namespace CurrencyConverterApp
 
             }
 
-        public List<CurrencyQuote> GetAllCurrencyQuote()
+        public List<CurrencyQuoteResultDTO> GetAllCurrencyQuotes()
             {
 
-            var Lista = _dataContext.CurrencyQuote.ToList();
+            var Lista = _dataContext.CurrencyQuotes
+                .Include(c => c.Currencies )
+                .ToList();
 
-            return Lista;
+            var result = new List<CurrencyQuoteResultDTO>();
+
+            foreach (var currencyquoteslist in Lista)
+            {
+                var currencyquote = new CurrencyQuoteResultDTO(currencyquoteslist.Currencies.Description,currencyquoteslist.Currencies.CurrencyISO4217, currencyquoteslist.CurrencyQuoteDate, currencyquoteslist.Valor);
+                
+                result.Add(currencyquote);
+
+            }
+
+            return result;
 
             
             }
 
-        public List<CurrencyQuote> GetCurrencyQuoteByDate(int Currencynumber, DateTime data)
+        public List<CurrencyQuotes> GetCurrencyQuoteByDate(int CurrenciesId, DateTime data)
         {
 
             //result.FindAll(x => x.CurrencyId == currencyid);
@@ -69,7 +83,7 @@ namespace CurrencyConverterApp
 
 
 
-            var result = _dataContext.CurrencyQuote.Where(x => x.CurrencyNumber == Currencynumber && x.CurrencyQuoteDate == data).ToList();
+            var result = _dataContext.CurrencyQuotes.Where(x => x.CurrenciesId == CurrenciesId && x.CurrencyQuoteDate == data).ToList();
 
 
             //            var resultA = result.FindAll(x => x.CurrencyNumber == Currencynumber);
@@ -82,55 +96,26 @@ namespace CurrencyConverterApp
 
         }
 
-        public decimal GetCurrencyQuoteValue(int currencynumber, DateTime data, int currencyidResult, decimal CurrencyValue)
+        public decimal GetCurrencyQuoteValue(string currencyisorequest, DateTime data, string currencyisoresult, decimal CurrencyValue)
         {
-            //List<CurrencyQuote> currencyresult = new List<CurrencyQuote>();
+            var currencyquotedata = _dataContext.CurrencyQuotes
+                                .Include(x => x.Currencies)
+                                .Where(
+                                   x => ((x.Currencies.CurrencyISO4217 == currencyisorequest && x.CurrencyQuoteDate == data)
+                                || (x.Currencies.CurrencyISO4217 == currencyisoresult && x.CurrencyQuoteDate == data))).ToList();
 
-            //currencyresult.Add(new CurrencyQuote(1, new DateTime(2020, 01, 01), 1));
-            //currencyresult.Add(new CurrencyQuote(1, new DateTime(2020, 01, 02), 1));
-            //currencyresult.Add(new CurrencyQuote(1, new DateTime(2020, 01, 03), 1));
-            //currencyresult.Add(new CurrencyQuote(1, new DateTime(2020, 01, 04), 1));
-            //currencyresult.Add(new CurrencyQuote(150, new DateTime(2020, 01, 01), 2));
-            //currencyresult.Add(new CurrencyQuote(160, new DateTime(2020, 01, 02), 2));
-            //currencyresult.Add(new CurrencyQuote(170, new DateTime(2020, 01, 03), 2));
-            //currencyresult.Add(new CurrencyQuote(180, new DateTime(2020, 01, 04), 2));
-            //currencyresult.Add(new CurrencyQuote(200, new DateTime(2020, 01, 01), 3));
-            //currencyresult.Add(new CurrencyQuote(210, new DateTime(2020, 01, 02), 3));
-            //currencyresult.Add(new CurrencyQuote(220, new DateTime(2020, 01, 03), 3));
-            //currencyresult.Add(new CurrencyQuote(230, new DateTime(2020, 01, 04), 3));
+            var currencyresultvalue = currencyquotedata.Where(x => x.Currencies.CurrencyISO4217 == currencyisoresult).Select(x => x.Valor).FirstOrDefault();
 
+            var currencyinformvalue = currencyquotedata.Where(x => x.Currencies.CurrencyISO4217 == currencyisorequest).Select(x => x.Valor).FirstOrDefault();
 
-            //100 *      230/150
-
-            //75       200
-            //150
-
-            //100      150
-            //       200
-
-            //100         150
-            //            1
-
-
-            //var currencyresultA = currencyresult.Where(x => x.CurrencyNumber == currencyidResult);
-
-            //var currencyresultB = currencyresultA.Where(y => y.CurrencyQuoteDate == data).FirstOrDefault();
-
-            var currencyresult = _dataContext.CurrencyQuote.Where(x => x.CurrencyNumber == currencyidResult && x.CurrencyQuoteDate == data).FirstOrDefault();
-
-
-            //var currencyinformA = currencyresult.Where(x => x.CurrencyNumber == currencynumber);
-
-            //var currencyinformB = currencyinformA.Where(y => y.CurrencyQuoteDate == data).FirstOrDefault();
-
-            var currencyinform = _dataContext.CurrencyQuote.Where(x => x.CurrencyNumber == currencynumber && x.CurrencyQuoteDate == data).FirstOrDefault();
-
-
-            return ((CurrencyValue * currencyinform.Valor) / currencyresult.Valor);
-
-            //return ((CurrencyValue * currencyinformB.Valor)/ currencyresultB.Valor);
-
-            //return ((CurrencyValue* currencyresultB.Valor) / currencyinformB.Valor);
+            if (currencyresultvalue !=0 && currencyinformvalue != 0) 
+            {
+                return ((CurrencyValue * currencyinformvalue) / currencyresultvalue);
+            }
+            else
+            {
+                return 0;
+            }
 
 
 
