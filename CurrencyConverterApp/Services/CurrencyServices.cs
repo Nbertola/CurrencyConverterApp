@@ -1,5 +1,6 @@
 ﻿using CurrencyConverterApp.Data;
 using CurrencyConverterApp.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,12 @@ namespace CurrencyConverterApp
 
         private readonly DataContext _dataContext;
 
+        private readonly ILogger<CurrencyServices> _logger;
+
         public CurrencyServices(DataContext dataContext)
         {
             _dataContext = dataContext;
+            //_logger = logger;
         }
 
 

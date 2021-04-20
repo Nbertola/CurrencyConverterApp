@@ -6,26 +6,55 @@ using CurrencyConverterApp.Data;
 using CurrencyConverterApp.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Serilog;
+using Serilog.Core;
+//using Microsoft.Extensions.Logging;
 
 namespace CurrencyConverterApp.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CurrencyController
+    public class CurrencyController : Controller
     {
-        public CurrencyController(DataContext dataContext)
+        public CurrencyController(DataContext dataContext, IConfiguration configuration/*,ILogger logger*/)
         {
             _dataContext = dataContext;
+            Configuration = configuration;
+            //_logger = logger;
+
+            _logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .WriteTo
+            .SQLite(
+            //connectionString: Configuration.GetConnectionString("Sqllite"),
+            sqliteDbPath: "basesqllite.db"
+             //tableName: "Log"
+
+             )
+            .CreateLogger();
+
         }
+
+
+        public IConfiguration Configuration { get; }
+
+
+
+        private readonly ILogger  _logger;
 
         private readonly DataContext _dataContext;
 
 
+        
+
         [HttpPost("CreateCurrenciesFromList")]
         public List<string> CreateCurrencies()
         {
-            var createcurrencies = new CurrencyServices(_dataContext);
+
+            
+
+            var createcurrencies = new CurrencyServices(_dataContext) ;
             var result = createcurrencies.LoadCurrency();
             return result;
         }
@@ -44,7 +73,6 @@ namespace CurrencyConverterApp.Controllers
         }
 
 
-
         [HttpPost("CreateCurrencieQuotesFromList")]
         public string CreateCurrencieQuotes()
         {
@@ -58,15 +86,29 @@ namespace CurrencyConverterApp.Controllers
         public List<Currencies> GetAllCurrencies()
         {
             var load = new CurrencyServices(_dataContext);
+
+            
+            var ipremote = HttpContext.Connection.RemoteIpAddress;
+            var resultMessage = $"Consulto Currencies { ipremote}";
+            _logger.Information(resultMessage);
             return load.GetAllCurrency();
-              }
+            
+
+        }
 
 
         [HttpGet("GetAllCurrencyQuotes")]
         public List<CurrencyQuoteResultDTO> GetAllCurrencyQuotes()
         {
+
+            //var factory = new LoggerFactory();
+            //var logger = new Logger<CurrencyController>(factory);
+            var resultMessage = "Hola";
             var load = new CurrencyQuoteServices(_dataContext);
+
+            
             return load.GetAllCurrencyQuotes();
+            
             
         }
 

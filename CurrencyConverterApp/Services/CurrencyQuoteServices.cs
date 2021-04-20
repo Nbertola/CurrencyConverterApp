@@ -98,17 +98,19 @@ namespace CurrencyConverterApp
 
         public decimal GetCurrencyQuoteValue(string currencyisorequest, DateTime data, string currencyisoresult, decimal CurrencyValue)
         {
-            var currencyresult = _dataContext.CurrencyQuotes
-                                 .Include(x => x.Currencies)
-                                 .Where(x => x.Currencies.CurrencyISO4217 == currencyisoresult && x.CurrencyQuoteDate == data).FirstOrDefault();
-
-            var currencyinform = _dataContext.CurrencyQuotes
+            var currencyquotedata = _dataContext.CurrencyQuotes
                                 .Include(x => x.Currencies)
-                                .Where(x => x.Currencies.CurrencyISO4217 == currencyisorequest && x.CurrencyQuoteDate == data).FirstOrDefault();
+                                .Where(
+                                   x => ((x.Currencies.CurrencyISO4217 == currencyisorequest && x.CurrencyQuoteDate == data)
+                                || (x.Currencies.CurrencyISO4217 == currencyisoresult && x.CurrencyQuoteDate == data))).ToList();
 
-            if (currencyresult !=null && currencyinform !=null) 
+            var currencyresultvalue = currencyquotedata.Where(x => x.Currencies.CurrencyISO4217 == currencyisoresult).Select(x => x.Valor).FirstOrDefault();
+
+            var currencyinformvalue = currencyquotedata.Where(x => x.Currencies.CurrencyISO4217 == currencyisorequest).Select(x => x.Valor).FirstOrDefault();
+
+            if (currencyresultvalue !=0 && currencyinformvalue != 0) 
             {
-                return ((CurrencyValue * currencyinform.Valor) / currencyresult.Valor);
+                return ((CurrencyValue * currencyinformvalue) / currencyresultvalue);
             }
             else
             {
