@@ -27,7 +27,7 @@ jobs:
       run: dotnet publish -c Release-o ${{ env.DOTNET_ROOT}}/webapp
       working-directory: ./CurrencyConverterApp
     - name: Upload artifact
-      uses: action/upload-artifact@v1
+      uses: actions/upload-artifact@v1
       with:
            name: webapp-artifact
            path: ${{ env.DOTNET_ROOT}}/webapp
