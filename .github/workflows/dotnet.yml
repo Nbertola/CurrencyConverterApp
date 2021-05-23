@@ -23,3 +23,11 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Publish The Code
+      run: dotnet publish -c Release-o ${{ env.DOTNET_ROOT}}/webapp
+      working-directory: ./CurrencyConverterApp
+    - name: Upload artifact
+      uses: action/upload-artifact@v1
+      with:
+           name: webapp-artifact
+           path: ${{ env.DOTNET_ROOT}}/webapp
