@@ -103,7 +103,7 @@ namespace CurrencyConverterApp.Controllers
 
             //var factory = new LoggerFactory();
             //var logger = new Logger<CurrencyController>(factory);
-            var resultMessage = "Hola";
+            //var resultMessage = "Hola";
             var load = new CurrencyQuoteServices(_dataContext);
 
             
