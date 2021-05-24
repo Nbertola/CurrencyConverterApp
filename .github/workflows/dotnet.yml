@@ -7,8 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+   continuous-integration: #name of the job
     runs-on: windows-latest
 
     steps:
