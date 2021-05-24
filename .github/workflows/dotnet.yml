@@ -43,7 +43,7 @@ jobs:
     - name: Login via Azure CLI
       uses: azure/login@v1
       with:
-        credentials: ${{ secrets.GITHUB }}
+        creds: ${{ secrets.GITHUB }}
       env: # Or as an environment variable
         credentials: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Add some settings
