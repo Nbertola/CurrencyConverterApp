@@ -43,7 +43,7 @@ jobs:
     - name: Login via Azure CLI
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS_BLAZOR_RG }}        
+        creds: ${{ secrets.GITHUB }}        
     - name: Add some settings
       uses: azure/appservice-settings@v1
       with:
