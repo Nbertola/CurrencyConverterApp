@@ -73,7 +73,7 @@ namespace CurrencyConverterApp.Controllers
         }
 
 
-        [HttpPost("CreateCurrencieQuotesFromListTest")]
+        [HttpPost("CreateCurrencieQuotesFromListTest1")]
         public string CreateCurrencieQuotes()
         {
 
