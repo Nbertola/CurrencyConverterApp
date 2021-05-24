@@ -2,13 +2,11 @@ name: .CI
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ TEST_CI ]
+
 
 jobs:
-  build:
-
+   continuous-integration: #name of the job
     runs-on: windows-latest
 
     steps:
@@ -31,3 +29,34 @@ jobs:
       with:
            name: webapp-artifact
            path: ${{ env.DOTNET_ROOT}}/webapp
+
+   continuous-deployment: 
+    needs: [continuous-integration]
+    runs-on: windows-latest
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: webapp-artifact
+        path: ${{env.DOTNET_ROOT}}/webapp
+    - name: Login via Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.GITHUB }}
+      env: # Or as an environment variable
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Add some settings
+      uses: azure/appservice-settings@v1
+      with:
+        app-name: ${{env.WEB_APP_NAME}}        
+        app-settings-json: '${{ secrets.APP_SETTINGS_WEB_APP_WINDOWS }}' 
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v1
+      with:
+        app-name: ${{env.WEB_APP_NAME}}
+        slot-name: 'production'
+        #publish-profile: ${{ secrets.WebAppPublishProfile }}
+        package: ${{env.DOTNET_ROOT}}/webapp
+    - name: Azure logout
+      run: |
+       az logout  
