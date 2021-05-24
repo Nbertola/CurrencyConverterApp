@@ -24,10 +24,10 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish The Code
-      run: dotnet publish -c Release-o ${{ env.DOTNET_ROOT}}/CurrencyConverterApp
-      working-directory: ./CurrencyConverterApp
+      run: dotnet publish -c Release-o ${{ env.DOTNET_ROOT}}\CurrencyConverterApp
+      working-directory: .\CurrencyConverterApp
     - name: Upload artifact
       uses: actions/upload-artifact@v1
       with:
            name: webapp-artifact
-           path: ${{ env.DOTNET_ROOT}}/CurrencyConverterApp
+           path: ${{ env.DOTNET_ROOT}}\CurrencyConverterApp
